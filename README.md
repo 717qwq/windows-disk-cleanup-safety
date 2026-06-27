@@ -1,17 +1,19 @@
-# reclaiming-windows-disk-space
+# windows-disk-cleanup-safety
 
-A [Claude Code](https://claude.com/claude-code) **skill** for safely freeing disk space on Windows — without ever deleting the user's data, game saves, or chat history.
+A compact [Claude Code](https://claude.com/claude-code) **skill** — a safety reference for deciding *what is safe to delete* when a Windows machine runs low on disk space.
 
-## What it does
+## What it is
 
-When a Windows machine is low on disk space, an agent's biggest risk isn't deleting too little — it's deleting something the user can never get back. This skill encodes the one judgment that matters (**cache vs. reclaimable store vs. user data**) plus a table of app-specific traps that cause "I deleted a folder and broke something" disasters:
+A strong model already knows how to clean a disk: measure first, delete, verify. What it doesn't reliably know is the small set of **irreversible traps**. This skill is just that kernel — two tables, nothing a capable model already does:
 
-- **Messengers** (WeChat/QQ/Telegram) — deleting the folder corrupts the message database
-- **Browsers** (Edge/Chrome) — wiping `User Data` loses logins and extensions
-- **Package managers** (npm/pip/conda/yarn/NuGet) — `rm` breaks the store; use the official cache commands
-- **System-level** (`Windows.old`, `hiberfil.sys`, …) — needs admin / `cleanmgr` / `powercfg`, never a manual delete
+1. **Classify every large item** — `cache` (safe) vs. `reclaimable store` (costs a re-download) vs. `user data` (never auto-delete).
+2. **App-specific traps** — the folders that *break* when deleted directly:
+   - **Messengers** (WeChat/QQ/Telegram) — deleting the folder corrupts the message database
+   - **Browsers** (Edge/Chrome) — wiping `User Data` loses logins and extensions
+   - **Package managers** (npm/pip/conda/yarn/NuGet) — use the official cache commands, not `rm`
+   - **System files** (`Windows.old`, `hiberfil.sys`) — needs `cleanmgr` / `powercfg`, never a manual delete
 
-It teaches the *method* (measure → classify → confirm → verify) and the *traps*, not a script to run blindly — because every machine hides space in a different place.
+It is a **guardrail against catastrophic, irreversible deletion**, not a productivity booster — the cost of being wrong (lost chat history, game saves, browser logins) is permanent.
 
 ## Install
 
@@ -19,18 +21,14 @@ Clone into your agent's skills directory:
 
 ```bash
 # Claude Code (Windows)
-git clone https://github.com/717qwq/reclaiming-windows-disk-space "$USERPROFILE/.claude/skills/reclaiming-windows-disk-space"
+git clone https://github.com/717qwq/windows-disk-cleanup-safety "$USERPROFILE/.claude/skills/windows-disk-cleanup-safety"
 ```
 
 The agent discovers it automatically via the `description` in `SKILL.md` the next time disk space comes up.
 
 ## How it was built
 
-This skill was created with the [Superpowers](https://github.com/obra/superpowers) `writing-skills` method — TDD applied to documentation:
-
-1. **RED** — ran the cleanup task on a real machine *without* the skill, recorded the baseline.
-2. **GREEN** — wrote the minimal skill capturing the non-obvious judgments the baseline missed or got inconsistently.
-3. **REFACTOR** — pressure-tested it (impatient "just delete the biggest folders" + system-level/no-admin scenarios) and closed the gaps it surfaced.
+Created with the [Superpowers](https://github.com/obra/superpowers) `writing-skills` method (TDD for documentation). The baseline test showed a capable model already handles the *process* well, so the skill was deliberately slimmed down to only the non-obvious knowledge it doesn't reliably carry: the tier model and the trap table.
 
 ## License
 
