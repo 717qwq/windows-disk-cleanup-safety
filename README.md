@@ -1,5 +1,7 @@
 # windows-disk-cleanup-safety
 
+**English** | [中文说明](README.zh-CN.md)
+
 A compact [Claude Code](https://claude.com/claude-code) **skill** — a safety reference for deciding *what is safe to delete* when a Windows machine runs low on disk space.
 
 ## What it is
