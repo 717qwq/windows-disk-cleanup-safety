@@ -19,7 +19,7 @@ Clone into your agent's skills directory:
 
 ```bash
 # Claude Code (Windows)
-git clone https://github.com/<your-user>/reclaiming-windows-disk-space "$USERPROFILE/.claude/skills/reclaiming-windows-disk-space"
+git clone https://github.com/717qwq/reclaiming-windows-disk-space "$USERPROFILE/.claude/skills/reclaiming-windows-disk-space"
 ```
 
 The agent discovers it automatically via the `description` in `SKILL.md` the next time disk space comes up.
